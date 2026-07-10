@@ -24,7 +24,11 @@ def main() -> None:
 
     args.profile.mkdir(parents=True, exist_ok=True)
     with sync_playwright() as pw:
-        context = pw.chromium.launch_persistent_context(str(args.profile), headless=False)
+        # Use the managed Google Chrome installation rather than bundled
+        # Chromium, which may be blocked by work-device policy.
+        context = pw.chromium.launch_persistent_context(
+            str(args.profile), headless=False, channel="chrome"
+        )
         page = context.pages[0] if context.pages else context.new_page()
         page.goto(args.page, wait_until="domcontentloaded")
         page.wait_for_timeout(1500)
