@@ -916,6 +916,8 @@ David`
     function openMailto(mailtoLink) {
       const a = document.createElement("a");
       a.href = mailtoLink;
+      a.target = "_blank";
+      a.rel = "noopener";
       a.style.display = "none";
       document.body.appendChild(a);
       a.click();
