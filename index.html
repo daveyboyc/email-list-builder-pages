@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outlook and LinkedIn Outreach Queue</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --ink: #1f2937;
+      --muted: #64748b;
+      --line: #d7dee8;
+      --blue: #1d4ed8;
+      --blue-dark: #1e40af;
+      --green: #047857;
+      --amber: #b45309;
+      --red: #b91c1c;
+      --slate: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      color: var(--ink);
+    }
+
+    header {
+      background: #101827;
+      color: white;
+      padding: 18px 28px;
+    }
+
+    header h1 {
+      margin: 0 0 6px;
+      font-size: 23px;
+      font-weight: 700;
+    }
+
+    header p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1360px;
+      margin: 22px auto;
+      padding: 0 16px 40px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 17px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 9px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 120px;
+      font-family: Consolas, Monaco, monospace;
+      white-space: pre;
+      resize: vertical;
+    }
+
+    #bodyTemplate {
+      min-height: 190px;
+    }
+
+    button {
+      background: var(--blue);
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 7px 7px 7px 0;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: var(--blue-dark);
+    }
+
+    button.secondary {
+      background: var(--slate);
+    }
+
+    button.warning {
+      background: var(--amber);
+    }
+
+    button.danger {
+      background: var(--red);
+    }
+
+    button.ghost {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    button:disabled {
+      background: #cbd5e1;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .row.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fed7aa;
+      font-size: 13px;
+    }
+
+    .status.ok {
+      background: #ecfdf5;
+      color: var(--green);
+      border-color: #a7f3d0;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: var(--red);
+      border-color: #fecaca;
+    }
+
+    .info {
+      background: #eff6ff;
+      color: #1e3a8a;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(120px, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: #f8fafc;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 21px;
+      margin-bottom: 3px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f1f5f9;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: #475569;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: 680px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    code {
+      background: #f1f5f9;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    a {
+      color: var(--blue);
+      word-break: break-word;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      color: #334155;
+      font-size: 12px;
+      margin: 0 4px 4px 0;
+    }
+
+    .pill.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .pill.warn {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .pill.bad {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .actions {
+      min-width: 280px;
+    }
+
+    .actions button {
+      padding: 7px 9px;
+      margin: 3px 3px 3px 0;
+      font-size: 12px;
+    }
+
+    .url-cell {
+      min-width: 210px;
+      max-width: 300px;
+    }
+
+    .contact-cell {
+      min-width: 220px;
+      max-width: 300px;
+    }
+
+    .preview-cell {
+      min-width: 300px;
+      max-width: 420px;
+    }
+
+    @media (max-width: 900px) {
+      .row,
+      .row.two,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Outlook and LinkedIn Outreach Queue</h1>
+    <p>Import the enriched CSV, send outreach, then prepare the Sales Nav and CRM activity queue.</p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>1. Import List</h2>
+
+      <div class="info">
+        Use the enriched CSV from <code>email_list_builder</code>. Rows with no email stay in the queue for LinkedIn fallback.
+      </div>
+
+      <div class="row two">
+        <div>
+          <label for="contactsFile">Load CSV file</label>
+          <input id="contactsFile" type="file" accept=".csv,text/csv" />
+        </div>
+        <div>
+          <label for="filterMode">Visible rows</label>
+          <select id="filterMode" onchange="previewContacts()">
+            <option value="all">All contacts</option>
+            <option value="needs_email">Needs email sent</option>
+            <option value="needs_linkedin">Needs LinkedIn message</option>
+            <option value="needs_sales_nav">Needs Sales Nav list</option>
+            <option value="needs_crm">Needs CRM added</option>
+            <option value="needs_activity">Needs CRM activity</option>
+            <option value="unsent">Not completed</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="contactsCsv">Contacts CSV</label>
+      <textarea id="contactsCsv">company_name,original_account_name,full_name,first_name,last_name,job_title,linkedin_url,work_email,personal_email,phone
+Alpha Energy ApS,Alpha Energy,Benjamin Biegel,Benjamin,Biegel,Co-Owner / Quant Trader,https://www.linkedin.com/in/benjaminbiegel,benjamin@example.com,,+45 00 00 00 00
+Outlook Energy,Outlook Energy,Nicholas Wood,Nicholas,Wood,Head of Data Science and Quantitative Research,https://uk.linkedin.com/in/nicholas-wood-phd-2b810b144,nicholas@example.com,,</textarea>
+
+      <button onclick="loadContacts()">Load contacts</button>
+      <button class="ghost" onclick="clearSavedData()">Clear saved queue</button>
+      <div id="contactsStatus" class="status">Contacts not loaded yet.</div>
+    </section>
+
+    <section class="panel">
+      <h2>2. Email Template</h2>
+
+      <label for="emailTemplateSelect">Email template</label>
+      <select id="emailTemplateSelect" onchange="applyEmailTemplateSelection()">
+        <option value="team_intro">Forecaster — team intro</option>
+        <option value="standard">Forecaster — standard</option>
+        <option value="short">Forecaster — short</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <label for="subjectTemplate">Subject</label>
+      <input id="subjectTemplate" value="AI price forecasting for energy markets" />
+
+      <label for="bodyTemplate">Body</label>
+      <textarea id="bodyTemplate">Hi {{firstName}},
+
+I have been trying to get in contact to make an intro. I see you are on {{teamPhrase}}.
+
+I wanted to briefly introduce our Forecaster platform.
+
+It uses ML to forecast energy market prices every 5 minutes, up to 7 days ahead, helping teams optimise trading decisions for BESS, solar PV and flexible loads.
+
+Forecaster is currently showing 16% higher average accuracy than EnAppSys forecasts.
+
+We would be happy to backtest your portfolio against historical market data to show what our Forecaster platform could have generated for you.
+
+Can we set up a call to discuss?
+
+Kind regards,
+David</textarea>
+
+      <p class="small">
+        Key placeholders: <code>{{firstName}}</code>, <code>{{company}}</code>, <code>{{team}}</code> (<code>data science</code> / <code>trading</code> / <code>leadership</code>),
+        <code>{{teamPhrase}}</code> (e.g. <code>the data science team</code>), <code>{{teamSentence}}</code> (e.g. <code>I see you are on the trading team.</code>).
+        Also <code>{{fullName}}</code>, <code>{{jobTitle}}</code>, <code>{{email}}</code>, <code>{{linkedinUrl}}</code>, and any CSV column.
+        Team is inferred from job title when you load contacts. Pick a preset or choose <strong>Custom</strong> and edit — edits auto-save to Custom.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>3. One-by-One Controls</h2>
+
+      <button onclick="previewContacts()">Refresh queue</button>
+      <button onclick="openNextEmail()">Send next email</button>
+      <button class="secondary" onclick="openNextLinkedIn()">Open next LinkedIn</button>
+
+      <div id="batchStatus" class="status">Load contacts, then work down the visible queue one row at a time.</div>
+    </section>
+
+    <section class="panel">
+      <h2>4. Sales Nav and CRM Follow-up</h2>
+
+      <div class="row two">
+        <div>
+          <label for="salesNavListUrl">Sales Navigator lead list URL</label>
+          <input id="salesNavListUrl" value="" placeholder="Paste the Sales Nav lead list URL after you create it" />
+        </div>
+        <div>
+          <label for="linkedinTemplateSelect">LinkedIn template</label>
+          <select id="linkedinTemplateSelect" onchange="applyLinkedInTemplateSelection()">
+            <option value="team_intro">Team intro — short</option>
+            <option value="standard">Standard</option>
+            <option value="custom">Custom</option>
+          </select>
+          <label for="linkedinMessageTemplate">LinkedIn message</label>
+          <textarea id="linkedinMessageTemplate">Hi {{firstName}}, I see you are on {{teamPhrase}} at {{company}}. I wanted to briefly introduce GridBeyond's Forecaster — an ML price forecasting tool for energy trading and optimisation. Worth a quick intro call?</textarea>
+        </div>
+      </div>
+
+      <label for="crmActivityTemplate">CRM activity note</label>
+      <textarea id="crmActivityTemplate">Sent {{firstName}} a Forecaster cold email.</textarea>
+
+      <button class="secondary" onclick="openSalesNavList()">Open Sales Nav list</button>
+      <button onclick="exportCrmAutomationCsv()">Export CRM automation queue</button>
+
+      <p class="small">
+        Salesforce needs the unique Lead or Contact ID, so this tool does not guess a Salesforce URL. Use the CRM automation queue after outreach: a browser agent can open each LinkedIn/Sales Nav profile, click Add to CRM, then create the activity note.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>5. Progress</h2>
+      <div id="metrics" class="metrics"></div>
+      <div>
+        <button onclick="exportStatusCsv()">Export status CSV</button>
+        <button onclick="exportActionLogCsv()">Export action log CSV</button>
+        <button onclick="exportCrmAutomationCsv()">Export CRM automation queue</button>
+        <button class="warning" onclick="clearActionLog()">Clear action log</button>
+      </div>
+      <div id="logStatus" class="status">No actions recorded yet.</div>
+    </section>
+
+    <section class="panel">
+      <h2>6. Queue</h2>
+      <div id="preview"></div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEYS = {
+      contactsCsv: "outreachBatchContactsCsvV2",
+      subject: "outreachBatchSubjectV2",
+      body: "outreachBatchBodyV2",
+      actions: "outreachBatchActionLogV2",
+      salesNavListUrl: "outreachBatchSalesNavListUrlV3",
+      activityTemplate: "outreachBatchActivityTemplateV3",
+      liTemplate: "outreachBatchLinkedInTemplateV2",
+      emailTemplateId: "outreachBatchEmailTemplateIdV1",
+      linkedinTemplateId: "outreachBatchLinkedInTemplateIdV1",
+      customEmailSubject: "outreachBatchCustomEmailSubjectV1",
+      customEmailBody: "outreachBatchCustomEmailBodyV1",
+      customLinkedInBody: "outreachBatchCustomLinkedInBodyV1",
+      lastContactId: "outreachBatchLastContactIdV1"
+    };
+
+    const EMAIL_TEMPLATE_PRESETS = {
+      team_intro: {
+        label: "Forecaster — team intro",
+        subject: "AI price forecasting for energy markets",
+        body: `Hi {{firstName}},
+
+I have been trying to get in contact to make an intro. I see you are on {{teamPhrase}}.
+
+I wanted to briefly introduce our Forecaster platform.
+
+It uses ML to forecast energy market prices every 5 minutes, up to 7 days ahead, helping teams optimise trading decisions for BESS, solar PV and flexible loads.
+
+Forecaster is currently showing 16% higher average accuracy than EnAppSys forecasts.
+
+We would be happy to backtest your portfolio against historical market data to show what our Forecaster platform could have generated for you.
+
+Can we set up a call to discuss?
+
+Kind regards,
+David`
+      },
+      standard: {
+        label: "Forecaster — standard",
+        subject: "AI price forecasting for energy markets",
+        body: `Hi {{firstName}},
+
+I wanted to briefly introduce our Forecaster platform.
+
+It uses ML to forecast energy market prices every 5 minutes, up to 7 days ahead, helping teams optimise trading decisions for BESS, solar PV and flexible loads.
+
+Forecaster is currently showing 16% higher average accuracy than EnAppSys forecasts.
+
+We would be happy to backtest your portfolio against historical market data to show what our Forecaster platform could have generated for you.
+
+Can we set up a call to discuss?
+
+Kind regards,
+David`
+      },
+      short: {
+        label: "Forecaster — short",
+        subject: "GridBeyond Forecaster — quick intro?",
+        body: `Hi {{firstName}},
+
+{{teamSentence}} At {{company}}, you might find GridBeyond's Forecaster useful — ML price forecasts every 5 minutes, up to 7 days ahead.
+
+Worth a 15-minute intro?
+
+Kind regards,
+David`
+      }
+    };
+
+    const LINKEDIN_TEMPLATE_PRESETS = {
+      team_intro: {
+        label: "Team intro — short",
+        body: "Hi {{firstName}}, I see you are on {{teamPhrase}} at {{company}}. I wanted to briefly introduce GridBeyond's Forecaster — an ML price forecasting tool for energy trading and optimisation. Worth a quick intro call?"
+      },
+      standard: {
+        label: "Standard",
+        body: "Hi {{firstName}}, I wanted to briefly introduce GridBeyond's Forecaster — an ML price forecasting tool for energy trading and optimisation. Worth a quick intro call?"
+      }
+    };
+
+    let contacts = [];
+    let actionLog = [];
+    let applyingTemplate = false;
+
+    function setStatus(id, message, type) {
+      const element = document.getElementById(id);
+      element.textContent = message;
+      element.className = type ? "status " + type : "status";
+    }
+
+    function normalizeHeader(header) {
+      return String(header || "")
+        .replace(/^\uFEFF/, "")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+    }
+
+    function parseCsv(text) {
+      const rows = [];
+      let current = "";
+      let row = [];
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"' && inQuotes && next === '"') {
+          current += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === "," && !inQuotes) {
+          row.push(current);
+          current = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") i++;
+          row.push(current);
+          if (row.some(cell => cell.trim() !== "")) rows.push(row);
+          row = [];
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+
+      row.push(current);
+      if (row.some(cell => cell.trim() !== "")) rows.push(row);
+      if (rows.length < 2) return [];
+
+      const headers = rows[0].map(header => header.trim());
+      const normalizedHeaders = headers.map(normalizeHeader);
+
+      return rows.slice(1).map((rowValues, rowIndex) => {
+        const original = {};
+        const normalized = {};
+        headers.forEach((header, index) => {
+          const value = (rowValues[index] || "").trim();
+          original[header] = value;
+          normalized[normalizedHeaders[index]] = value;
+        });
+        return normalizeContact(normalized, original, rowIndex);
+      }).filter(contact => contact.email || contact.linkedinUrl || contact.fullName);
+    }
+
+    function firstValue(row, keys) {
+      for (const key of keys) {
+        if (row[key]) return row[key];
+      }
+      return "";
+    }
+
+    const LEADERSHIP_KEYWORDS = [
+      "ceo", "cto", "chief executive", "chief technology", "chief commercial",
+      "founder", "co-owner", "managing director", "president", "chief officer"
+    ];
+    const TRADING_KEYWORDS = [
+      "trader", "trading", "power trader", "energy trader", "quant trader",
+      "head of trading", "prompt trading", "algorithmic trading"
+    ];
+    const DATA_SCIENCE_KEYWORDS = [
+      "data scientist", "data science", "ml engineer", "machine learning",
+      "quant researcher", "quantitative researcher", "forecasting", "head of data science"
+    ];
+
+    function inferTeam(jobTitle) {
+      const title = String(jobTitle || "").toLowerCase().replace(/\s+/g, " ").trim();
+      if (!title) return "";
+
+      for (const keyword of LEADERSHIP_KEYWORDS) {
+        if (title.includes(keyword)) return "leadership";
+      }
+
+      if (title.includes("head of data science")) return "data science";
+      if (title.includes("head of trading")) return "trading";
+      if (title.startsWith("head of")) {
+        if (title.includes("optim") || title.includes("commercial") || title.includes("algorithmic")) {
+          return "leadership";
+        }
+        return "leadership";
+      }
+
+      for (const keyword of TRADING_KEYWORDS) {
+        if (title.includes(keyword)) return "trading";
+      }
+      for (const keyword of DATA_SCIENCE_KEYWORDS) {
+        if (title.includes(keyword)) return "data science";
+      }
+
+      if (title.includes("quant") && !title.includes("trader")) return "data science";
+      if (title.includes("data") || title.includes("analyst")) return "data science";
+
+      return "trading";
+    }
+
+    function resolveTeam(row, jobTitle) {
+      const explicit = firstValue(row, ["team", "team_category", "outreach_team"]).toLowerCase().trim();
+      if (["leadership", "trading", "data science"].includes(explicit)) return explicit;
+      return inferTeam(jobTitle);
+    }
+
+    function teamPhrase(team) {
+      if (team === "leadership") return "the leadership team";
+      if (team === "data science") return "the data science team";
+      if (team === "trading") return "the trading team";
+      return "your team";
+    }
+
+    function teamSentence(team) {
+      if (!team) return "";
+      return "I see you are on " + teamPhrase(team) + ".";
+    }
+
+    function splitFullName(fullName) {
+      const parts = String(fullName || "").trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return { firstName: "", lastName: "" };
+      return {
+        firstName: parts[0],
+        lastName: parts.slice(1).join(" ")
+      };
+    }
+
+    function normalizeContact(row, original, rowIndex) {
+      const fullName = firstValue(row, ["full_name", "name", "contact_name", "person"]);
+      const split = splitFullName(fullName);
+      const firstName = firstValue(row, ["first_name", "firstname", "first"]) || split.firstName;
+      const lastName = firstValue(row, ["last_name", "lastname", "last"]) || split.lastName;
+      const company = firstValue(row, ["company_name", "company", "account_name", "companyname"]);
+      const originalAccountName = firstValue(row, ["original_account_name", "sf_account_name", "salesforce_account_name"]);
+      const email = firstValue(row, ["work_email", "email", "email_address", "business_email"]) ||
+        firstValue(row, ["personal_email"]);
+      const linkedinUrl = firstValue(row, ["linkedin_url", "linkedin", "linkedin_profile", "linkedinurl"]);
+      const jobTitle = firstValue(row, ["job_title", "title", "role"]);
+      const phone = firstValue(row, ["phone", "mobile", "phone_number", "work_phone"]);
+      const team = resolveTeam(row, jobTitle);
+      const resolvedFullName = fullName || [firstName, lastName].filter(Boolean).join(" ");
+      const id = stableContactId({
+        email,
+        linkedinUrl,
+        fullName: resolvedFullName,
+        company,
+        originalAccountName,
+        rowIndex
+      });
+
+      return {
+        id,
+        rowIndex,
+        original,
+        firstName,
+        lastName,
+        fullName: resolvedFullName,
+        company,
+        companyDomain: firstValue(row, ["company_domain", "domain"]),
+        jobTitle,
+        team,
+        teamPhrase: teamPhrase(team),
+        teamSentence: teamSentence(team),
+        email,
+        linkedinUrl,
+        phone,
+        lushaId: firstValue(row, ["lusha_id"]),
+        notes: firstValue(row, ["notes"]),
+        source: firstValue(row, ["source"])
+      };
+    }
+
+    function stableContactId(contact) {
+      const raw = [
+        contact.email,
+        contact.linkedinUrl,
+        contact.fullName,
+        contact.company,
+        String(contact.rowIndex)
+      ].join("|").toLowerCase();
+      let hash = 0;
+      for (let i = 0; i < raw.length; i++) {
+        hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+        hash |= 0;
+      }
+      return "c" + Math.abs(hash);
+    }
+
+    function loadContacts() {
+      const csvText = document.getElementById("contactsCsv").value;
+      contacts = parseCsv(csvText);
+      saveCurrentData();
+
+      if (!contacts.length) {
+        setStatus("contactsStatus", "No contacts found. Use a CSV with email, work_email, linkedin_url, or full_name.", "error");
+        document.getElementById("preview").innerHTML = "";
+        renderMetrics();
+        return;
+      }
+
+      const emailCount = contacts.filter(contact => contact.email).length;
+      const linkedinCount = contacts.filter(contact => contact.linkedinUrl).length;
+      setStatus(
+        "contactsStatus",
+        "Loaded " + contacts.length + " contacts. Email: " + emailCount + ". LinkedIn: " + linkedinCount + ".",
+        "ok"
+      );
+      previewContacts();
+    }
+
+    function getContactState(contactId) {
+      const state = {
+        emailOpenedAt: "",
+        emailSentAt: "",
+        linkedinOpenedAt: "",
+        linkedinSentAt: "",
+        salesNavListAddedAt: "",
+        crmAddedAt: "",
+        crmActivityLoggedAt: "",
+        crmFieldsCopiedAt: "",
+        crmActivityCopiedAt: "",
+        skippedAt: "",
+        lastAction: ""
+      };
+
+      for (const event of actionLog) {
+        if (event.contactId !== contactId) continue;
+        state.lastAction = event.action;
+        if (event.action === "email_opened") state.emailOpenedAt = event.timestamp;
+        if (event.action === "email_sent") state.emailSentAt = event.timestamp;
+        if (event.action === "email_resent") state.emailOpenedAt = event.timestamp;
+        if (event.action === "linkedin_opened") state.linkedinOpenedAt = event.timestamp;
+        if (event.action === "linkedin_sent") state.linkedinSentAt = event.timestamp;
+        if (event.action === "sales_nav_list_added") state.salesNavListAddedAt = event.timestamp;
+        if (event.action === "crm_added") state.crmAddedAt = event.timestamp;
+        if (event.action === "crm_activity_logged") state.crmActivityLoggedAt = event.timestamp;
+        if (event.action === "crm_fields_copied") state.crmFieldsCopiedAt = event.timestamp;
+        if (event.action === "crm_activity_copied") state.crmActivityCopiedAt = event.timestamp;
+        if (event.action === "skipped") state.skippedAt = event.timestamp;
+      }
+
+      return state;
+    }
+
+    function recordAction(contact, action, detail) {
+      const event = {
+        timestamp: new Date().toISOString(),
+        contactId: contact.id,
+        action,
+        detail: detail || "",
+        fullName: contact.fullName,
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        company: contact.company,
+        jobTitle: contact.jobTitle,
+        team: contact.team,
+        teamPhrase: contact.teamPhrase,
+        teamSentence: contact.teamSentence,
+        email: contact.email,
+        linkedinUrl: contact.linkedinUrl,
+        phone: contact.phone
+      };
+      actionLog.push(event);
+      saveActionLog();
+      renderMetrics();
+      setStatus("logStatus", "Recorded " + action + " for " + displayName(contact) + ".", "ok");
+    }
+
+    function saveActionLog() {
+      localStorage.setItem(STORAGE_KEYS.actions, JSON.stringify(actionLog));
+    }
+
+    function loadActionLog() {
+      try {
+        actionLog = JSON.parse(localStorage.getItem(STORAGE_KEYS.actions) || "[]");
+        if (!Array.isArray(actionLog)) actionLog = [];
+      } catch (_) {
+        actionLog = [];
+      }
+    }
+
+    function replacePlaceholders(text, contact) {
+      const values = {
+        firstName: contact.firstName,
+        lastName: contact.lastName,
+        fullName: contact.fullName,
+        company: contact.company,
+        companyDomain: contact.companyDomain,
+        jobTitle: contact.jobTitle,
+        team: contact.team,
+        teamPhrase: contact.teamPhrase,
+        teamSentence: contact.teamSentence,
+        email: contact.email,
+        linkedinUrl: contact.linkedinUrl,
+        phone: contact.phone,
+        lushaId: contact.lushaId,
+        query: encodeURIComponent([contact.fullName, contact.company].filter(Boolean).join(" "))
+      };
+
+      for (const [key, value] of Object.entries(contact.original || {})) {
+        values[key] = value;
+        values[normalizeHeader(key)] = value;
+      }
+
+      return String(text || "").replace(/\{\{\s*([a-zA-Z0-9_ -]+)\s*\}\}/g, function(match, key) {
+        const cleanKey = key.trim();
+        return values[cleanKey] || values[normalizeHeader(cleanKey)] || "";
+      });
+    }
+
+    function getFilledEmail(contact) {
+      const subjectTemplate = document.getElementById("subjectTemplate").value;
+      const bodyTemplate = document.getElementById("bodyTemplate").value;
+      saveCurrentData();
+      return {
+        subject: replacePlaceholders(subjectTemplate, contact).trim(),
+        body: replacePlaceholders(bodyTemplate, contact).trim()
+      };
+    }
+
+    function createMailtoLink(contact) {
+      const filled = getFilledEmail(contact);
+      return "mailto:" + encodeURIComponent(contact.email)
+        + "?subject=" + encodeURIComponent(filled.subject)
+        + "&body=" + encodeURIComponent(filled.body);
+    }
+
+    function makeCrmFieldsText(contact) {
+      return [
+        "Name: " + contact.fullName,
+        "First name: " + contact.firstName,
+        "Last name: " + contact.lastName,
+        "Title: " + contact.jobTitle,
+        "Company: " + contact.company,
+        "Email: " + contact.email,
+        "Phone: " + contact.phone,
+        "LinkedIn: " + contact.linkedinUrl,
+        "Source: GridBeyond Forecaster outbound"
+      ].join("\n");
+    }
+
+    function createCrmActivityText(contact) {
+      return replacePlaceholders(document.getElementById("crmActivityTemplate").value, contact).trim();
+    }
+
+    function createLinkedInMessage(contact) {
+      return replacePlaceholders(document.getElementById("linkedinMessageTemplate").value, contact).trim();
+    }
+
+    function openUrl(url) {
+      if (!url) return;
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    function openMailto(mailtoLink) {
+      const a = document.createElement("a");
+      a.href = mailtoLink;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function escapeHtml(text) {
+      return String(text == null ? "" : text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttr(text) {
+      return escapeHtml(text).replaceAll("`", "&#096;");
+    }
+
+    function csvEscape(value) {
+      const text = String(value || "");
+      if (/[",\n\r]/.test(text)) {
+        return '"' + text.replaceAll('"', '""') + '"';
+      }
+      return text;
+    }
+
+    function downloadText(filename, text, mimeType) {
+      const blob = new Blob([text], { type: mimeType || "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function getFilteredContacts() {
+      const mode = document.getElementById("filterMode").value;
+      return contacts.filter(contact => {
+        const state = getContactState(contact.id);
+        if (mode === "needs_email") return !!contact.email && !state.emailSentAt && !state.skippedAt;
+        if (mode === "needs_linkedin") return !!contact.linkedinUrl && !state.linkedinSentAt && !state.skippedAt;
+        if (mode === "needs_sales_nav") return !!contact.linkedinUrl && !state.salesNavListAddedAt && !state.skippedAt;
+        if (mode === "needs_crm") return (state.emailSentAt || state.linkedinSentAt) && !state.crmAddedAt && !state.skippedAt;
+        if (mode === "needs_activity") return state.crmAddedAt && !state.crmActivityLoggedAt && !state.skippedAt;
+        if (mode === "unsent") return !state.emailSentAt && !state.linkedinSentAt && !state.skippedAt;
+        return true;
+      });
+    }
+
+    function getCurrentBatch() {
+      const filtered = getFilteredContacts();
+      return {
+        filtered,
+        batch: filtered
+      };
+    }
+
+    function renderMetrics() {
+      const total = contacts.length;
+      const emailCapable = contacts.filter(contact => contact.email).length;
+      const linkedinCapable = contacts.filter(contact => contact.linkedinUrl).length;
+      const emailSent = contacts.filter(contact => getContactState(contact.id).emailSentAt).length;
+      const linkedinSent = contacts.filter(contact => getContactState(contact.id).linkedinSentAt).length;
+      const salesNavAdded = contacts.filter(contact => getContactState(contact.id).salesNavListAddedAt).length;
+      const crmAdded = contacts.filter(contact => getContactState(contact.id).crmAddedAt).length;
+      const activityLogged = contacts.filter(contact => getContactState(contact.id).crmActivityLoggedAt).length;
+      const skipped = contacts.filter(contact => getContactState(contact.id).skippedAt).length;
+
+      document.getElementById("metrics").innerHTML = [
+        metricHtml(total, "Loaded"),
+        metricHtml(emailCapable, "Have email"),
+        metricHtml(linkedinCapable, "Have LinkedIn"),
+        metricHtml(emailSent, "Email sent"),
+        metricHtml(linkedinSent, "LinkedIn sent"),
+        metricHtml(salesNavAdded, "Sales Nav list"),
+        metricHtml(crmAdded, "CRM added"),
+        metricHtml(activityLogged, "Activity logged"),
+        metricHtml(skipped, "Skipped")
+      ].join("");
+
+      if (actionLog.length) {
+        const last = actionLog[actionLog.length - 1];
+        setStatus("logStatus", actionLog.length + " actions recorded. Last: " + last.action + " for " + last.fullName + ".", "ok");
+      } else {
+        setStatus("logStatus", "No actions recorded yet.", "");
+      }
+    }
+
+    function metricHtml(value, label) {
+      return `<div class="metric"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
+    }
+
+    function displayName(contact) {
+      return contact.fullName || contact.email || contact.linkedinUrl || "contact";
+    }
+
+    function statusPills(contact) {
+      const state = getContactState(contact.id);
+      const pills = [];
+      pills.push(contact.email ? "Email" : "No email");
+      pills.push(contact.linkedinUrl ? "LinkedIn" : "No LinkedIn");
+      if (state.emailSentAt) pills.push("Email sent");
+      if (state.linkedinSentAt) pills.push("LI sent");
+      if (state.salesNavListAddedAt) pills.push("Sales Nav");
+      if (state.crmAddedAt) pills.push("CRM added");
+      if (state.crmActivityLoggedAt) pills.push("Activity");
+      if (state.skippedAt) pills.push("Skipped");
+      if (contact.team) pills.push(contact.team);
+
+      return pills.map(label => {
+        const cls = label.includes("sent") || label.includes("added") ? "ok" :
+          label.startsWith("No") || label === "Skipped" ? "bad" : "warn";
+        return `<span class="pill ${cls}">${escapeHtml(label)}</span>`;
+      }).join("");
+    }
+
+    function previewContacts() {
+      const preview = document.getElementById("preview");
+
+      if (!contacts.length) {
+        preview.innerHTML = "<p class='small'>No contacts loaded yet.</p>";
+        renderMetrics();
+        return;
+      }
+
+      const current = getCurrentBatch();
+      if (!current.batch.length) {
+        preview.innerHTML = "<p class='small'>No contacts in this view. Reset the index or change the filter.</p>";
+        setStatus("batchStatus", "No contacts in this view.", "error");
+        renderMetrics();
+        return;
+      }
+
+      const rows = current.batch.map((contact, index) => {
+        const absoluteIndex = index + 1;
+        const filled = getFilledEmail(contact);
+        const linkedin = contact.linkedinUrl
+          ? `<a href="${escapeAttr(contact.linkedinUrl)}" onclick="openLinkedInById('${contact.id}'); return false;">${escapeHtml(contact.linkedinUrl)}</a>`
+          : "<span class='small'>No LinkedIn URL</span>";
+        const email = contact.email ? `<a href="${escapeAttr(createMailtoLink(contact))}" onclick="openEmailById('${contact.id}'); return false;">${escapeHtml(contact.email)}</a>` : "<span class='small'>No email</span>";
+        const linkedinMessage = createLinkedInMessage(contact);
+        const crmActivity = createCrmActivityText(contact);
+
+        return `
+          <tr data-contact-id="${escapeAttr(contact.id)}">
+            <td>${absoluteIndex}</td>
+            <td class="contact-cell">
+              <strong>${escapeHtml(displayName(contact))}</strong><br>
+              ${escapeHtml(contact.jobTitle)}<br>
+              <span class="small">${escapeHtml(contact.company)}</span>${contact.team ? `<br><span class="small">Team: ${escapeHtml(contact.team)}</span>` : ""}<br>
+              ${statusPills(contact)}
+            </td>
+            <td class="url-cell">${email}<br>${escapeHtml(contact.phone)}</td>
+            <td class="url-cell">${linkedin}</td>
+            <td class="preview-cell">
+              <strong>${escapeHtml(filled.subject)}</strong>
+              <pre>${escapeHtml(filled.body)}</pre>
+              <details>
+                <summary>LinkedIn message</summary>
+                <pre>${escapeHtml(linkedinMessage)}</pre>
+              </details>
+              <details>
+                <summary>CRM activity</summary>
+                <pre>${escapeHtml(crmActivity)}</pre>
+              </details>
+            </td>
+            <td class="actions">
+              <button ${contact.email ? "" : "disabled"} onclick="openEmailById('${contact.id}')">Send email</button>
+              <button ${contact.email ? "" : "disabled"} class="ghost" onclick="openEmailById('${contact.id}', {resend: true})">Send again</button>
+              <button ${contact.linkedinUrl ? "" : "disabled"} class="secondary" onclick="openLinkedInById('${contact.id}')">Open LinkedIn</button>
+              <button ${contact.linkedinUrl ? "" : "disabled"} class="secondary" onclick="copyLinkedInMessageById('${contact.id}')">Copy LI msg</button>
+              <button ${contact.linkedinUrl ? "" : "disabled"} class="secondary" onclick="markById('${contact.id}', 'linkedin_sent')">Mark LI sent</button>
+              <button ${contact.linkedinUrl ? "" : "disabled"} class="ghost" onclick="markById('${contact.id}', 'sales_nav_list_added')">Mark Sales Nav list</button>
+              <button class="ghost" onclick="copyCrmFieldsById('${contact.id}')">Copy CRM fields</button>
+              <button class="ghost" onclick="copyCrmActivityById('${contact.id}')">Copy activity</button>
+              <button class="ghost" onclick="markById('${contact.id}', 'crm_added')">Mark CRM added</button>
+              <button class="ghost" onclick="markById('${contact.id}', 'crm_activity_logged')">Mark activity logged</button>
+              <button class="warning" onclick="markById('${contact.id}', 'skipped')">Skip</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      preview.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Contact</th>
+                <th>Email / Phone</th>
+                <th>LinkedIn</th>
+                <th>Message Preview</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+
+      setStatus(
+        "batchStatus",
+        "Showing all " + current.filtered.length + " visible contacts.",
+        "ok"
+      );
+      renderMetrics();
+      restoreQueuePosition(current.batch);
+    }
+
+    function restoreQueuePosition(batch) {
+      const nextUnsent = batch.find(contact => {
+        const state = getContactState(contact.id);
+        return contact.email && !state.emailSentAt && !state.skippedAt;
+      });
+      const rememberedId = localStorage.getItem(STORAGE_KEYS.lastContactId);
+      const targetId = nextUnsent ? nextUnsent.id : rememberedId;
+      if (!targetId) return;
+      setTimeout(() => {
+        const row = document.querySelector(`[data-contact-id="${targetId}"]`);
+        if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 0);
+    }
+
+    function findContact(id) {
+      return contacts.find(contact => contact.id === id);
+    }
+
+    function openEmailById(id, options) {
+      const opts = options || {};
+      const contact = findContact(id);
+      if (!contact || !contact.email) return;
+      localStorage.setItem(STORAGE_KEYS.lastContactId, contact.id);
+      openMailto(createMailtoLink(contact));
+      recordAction(contact, "email_opened");
+      if (opts.resend) {
+        recordAction(contact, "email_resent");
+      } else {
+        recordAction(contact, "email_sent");
+      }
+      previewContacts();
+    }
+
+    function openLinkedInById(id) {
+      const contact = findContact(id);
+      if (!contact || !contact.linkedinUrl) return;
+      openUrl(contact.linkedinUrl);
+      recordAction(contact, "linkedin_opened");
+      previewContacts();
+    }
+
+    async function copyText(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+    }
+
+    async function copyCrmFieldsById(id) {
+      const contact = findContact(id);
+      if (!contact) return;
+      await copyText(makeCrmFieldsText(contact));
+      recordAction(contact, "crm_fields_copied");
+      previewContacts();
+    }
+
+    async function copyCrmActivityById(id) {
+      const contact = findContact(id);
+      if (!contact) return;
+      await copyText(createCrmActivityText(contact));
+      recordAction(contact, "crm_activity_copied");
+      previewContacts();
+    }
+
+    async function copyLinkedInMessageById(id) {
+      const contact = findContact(id);
+      if (!contact) return;
+      await copyText(createLinkedInMessage(contact));
+      recordAction(contact, "linkedin_message_copied");
+      previewContacts();
+    }
+
+    function markById(id, action) {
+      const contact = findContact(id);
+      if (!contact) return;
+      recordAction(contact, action);
+      previewContacts();
+    }
+
+    function openSalesNavList() {
+      const url = document.getElementById("salesNavListUrl").value.trim();
+      saveCurrentData();
+      if (!url) {
+        setStatus("batchStatus", "Paste the Sales Navigator lead list URL first.", "error");
+        return;
+      }
+      openUrl(url);
+      setStatus("batchStatus", "Opened Sales Navigator lead list.", "ok");
+    }
+
+    function openNextEmail() {
+      if (!contacts.length) {
+        setStatus("batchStatus", "Load contacts first.", "error");
+        return;
+      }
+
+      const current = getCurrentBatch();
+      const contact = current.batch.find(row => {
+        const state = getContactState(row.id);
+        return row.email && !state.emailSentAt && !state.skippedAt;
+      });
+      if (!contact) {
+        setStatus("batchStatus", "No unsent email-capable contact in this view.", "error");
+        return;
+      }
+      openEmailById(contact.id);
+      setStatus("batchStatus", "Opened Outlook compose for " + contact.email + " and marked sent.", "ok");
+    }
+
+    function openNextLinkedIn() {
+      if (!contacts.length) {
+        setStatus("batchStatus", "Load contacts first.", "error");
+        return;
+      }
+
+      const current = getCurrentBatch();
+      const contact = current.batch.find(row => {
+        const state = getContactState(row.id);
+        return row.linkedinUrl && !state.linkedinSentAt && !state.skippedAt;
+      });
+      if (!contact) {
+        setStatus("batchStatus", "No unsent LinkedIn-capable contact in this view.", "error");
+        return;
+      }
+      openLinkedInById(contact.id);
+      setStatus("batchStatus", "Opened LinkedIn profile for " + displayName(contact) + ".", "ok");
+      previewContacts();
+    }
+
+    function exportStatusCsv() {
+      const headers = [
+        "full_name", "first_name", "last_name", "company", "original_account_name", "job_title", "team", "email", "email_source", "phone", "linkedin_url",
+        "email_opened_at", "email_sent_at", "linkedin_opened_at", "linkedin_sent_at",
+        "sales_nav_list_added_at", "crm_added_at", "crm_activity_logged_at", "skipped_at", "last_action", "crm_activity_note"
+      ];
+      const rows = contacts.map(contact => {
+        const state = getContactState(contact.id);
+        return [
+          contact.fullName,
+          contact.firstName,
+          contact.lastName,
+          contact.company,
+          contact.originalAccountName,
+          contact.jobTitle,
+          contact.team,
+          contact.email || "no@email.com",
+          contact.email ? "queue" : "placeholder",
+          contact.phone,
+          contact.linkedinUrl,
+          state.emailOpenedAt,
+          state.emailSentAt,
+          state.linkedinOpenedAt,
+          state.linkedinSentAt,
+          state.salesNavListAddedAt,
+          state.crmAddedAt,
+          state.crmActivityLoggedAt,
+          state.skippedAt,
+          state.lastAction,
+          createCrmActivityText(contact)
+        ].map(csvEscape).join(",");
+      });
+      downloadText("outreach_status_" + timestampForFile() + ".csv", [headers.join(","), ...rows].join("\n"), "text/csv;charset=utf-8");
+    }
+
+    function exportCrmAutomationCsv() {
+      const headers = [
+        "full_name", "first_name", "last_name", "company", "original_account_name", "job_title", "team", "email", "email_source", "phone", "linkedin_url",
+        "outreach_channel", "email_sent_at", "linkedin_sent_at", "sales_nav_list_added_at",
+        "crm_added_at", "crm_activity_logged_at", "crm_activity_note"
+      ];
+      const rows = contacts
+        .filter(contact => {
+          const state = getContactState(contact.id);
+          return !state.skippedAt && (state.emailSentAt || state.linkedinSentAt);
+        })
+        .map(contact => {
+          const state = getContactState(contact.id);
+          const channel = state.emailSentAt ? "email" : state.linkedinSentAt ? "linkedin" : "pending";
+          return [
+            contact.fullName,
+            contact.firstName,
+            contact.lastName,
+            contact.company,
+            contact.originalAccountName,
+            contact.jobTitle,
+            contact.team,
+            contact.email || "no@email.com",
+            contact.email ? "queue" : "placeholder",
+            contact.phone,
+            contact.linkedinUrl,
+            channel,
+            state.emailSentAt,
+            state.linkedinSentAt,
+            state.salesNavListAddedAt,
+            state.crmAddedAt,
+            state.crmActivityLoggedAt,
+            createCrmActivityText(contact)
+          ].map(csvEscape).join(",");
+        });
+      downloadText("crm_automation_queue_" + timestampForFile() + ".csv", [headers.join(","), ...rows].join("\n"), "text/csv;charset=utf-8");
+    }
+
+    function exportActionLogCsv() {
+      const headers = ["timestamp", "contact_id", "action", "detail", "full_name", "first_name", "last_name", "company", "job_title", "email", "phone", "linkedin_url"];
+      const rows = actionLog.map(event => [
+        event.timestamp,
+        event.contactId,
+        event.action,
+        event.detail,
+        event.fullName,
+        event.firstName,
+        event.lastName,
+        event.company,
+        event.jobTitle,
+        event.email,
+        event.phone,
+        event.linkedinUrl
+      ].map(csvEscape).join(","));
+      downloadText("outreach_action_log_" + timestampForFile() + ".csv", [headers.join(","), ...rows].join("\n"), "text/csv;charset=utf-8");
+    }
+
+    function timestampForFile() {
+      return new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+    }
+
+    function persistCustomEmailTemplate() {
+      localStorage.setItem(STORAGE_KEYS.customEmailSubject, document.getElementById("subjectTemplate").value);
+      localStorage.setItem(STORAGE_KEYS.customEmailBody, document.getElementById("bodyTemplate").value);
+    }
+
+    function persistCustomLinkedInTemplate() {
+      localStorage.setItem(STORAGE_KEYS.customLinkedInBody, document.getElementById("linkedinMessageTemplate").value);
+    }
+
+    function markEmailTemplateCustom() {
+      if (applyingTemplate) return;
+      const select = document.getElementById("emailTemplateSelect");
+      if (select.value !== "custom") {
+        persistCustomEmailTemplate();
+        select.value = "custom";
+        localStorage.setItem(STORAGE_KEYS.emailTemplateId, "custom");
+      }
+    }
+
+    function markLinkedInTemplateCustom() {
+      if (applyingTemplate) return;
+      const select = document.getElementById("linkedinTemplateSelect");
+      if (select.value !== "custom") {
+        persistCustomLinkedInTemplate();
+        select.value = "custom";
+        localStorage.setItem(STORAGE_KEYS.linkedinTemplateId, "custom");
+      }
+    }
+
+    function applyEmailTemplateSelection() {
+      const templateId = document.getElementById("emailTemplateSelect").value;
+      applyingTemplate = true;
+      try {
+        if (templateId === "custom") {
+          const subject = localStorage.getItem(STORAGE_KEYS.customEmailSubject);
+          const body = localStorage.getItem(STORAGE_KEYS.customEmailBody);
+          if (subject != null) document.getElementById("subjectTemplate").value = subject;
+          if (body != null) document.getElementById("bodyTemplate").value = body;
+        } else {
+          const preset = EMAIL_TEMPLATE_PRESETS[templateId];
+          if (preset) {
+            document.getElementById("subjectTemplate").value = preset.subject;
+            document.getElementById("bodyTemplate").value = preset.body;
+          }
+        }
+        localStorage.setItem(STORAGE_KEYS.emailTemplateId, templateId);
+        saveCurrentData();
+        previewContacts();
+      } finally {
+        applyingTemplate = false;
+      }
+    }
+
+    function applyLinkedInTemplateSelection() {
+      const templateId = document.getElementById("linkedinTemplateSelect").value;
+      applyingTemplate = true;
+      try {
+        if (templateId === "custom") {
+          const body = localStorage.getItem(STORAGE_KEYS.customLinkedInBody);
+          if (body != null) document.getElementById("linkedinMessageTemplate").value = body;
+        } else {
+          const preset = LINKEDIN_TEMPLATE_PRESETS[templateId];
+          if (preset) document.getElementById("linkedinMessageTemplate").value = preset.body;
+        }
+        localStorage.setItem(STORAGE_KEYS.linkedinTemplateId, templateId);
+        saveCurrentData();
+        previewContacts();
+      } finally {
+        applyingTemplate = false;
+      }
+    }
+
+    function clearActionLog() {
+      if (!confirm("Clear all recorded actions from this browser?")) return;
+      actionLog = [];
+      saveActionLog();
+      previewContacts();
+      setStatus("logStatus", "Action log cleared.", "error");
+    }
+
+    function clearSavedData() {
+      if (!confirm("Clear saved CSV, templates, queue index, and action log from this browser?")) return;
+      Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
+      actionLog = [];
+      contacts = [];
+      document.getElementById("contactsCsv").value = "";
+      document.getElementById("preview").innerHTML = "";
+      renderMetrics();
+      setStatus("contactsStatus", "Saved queue cleared.", "error");
+    }
+
+    function saveCurrentData() {
+      localStorage.setItem(STORAGE_KEYS.contactsCsv, document.getElementById("contactsCsv").value);
+      localStorage.setItem(STORAGE_KEYS.subject, document.getElementById("subjectTemplate").value);
+      localStorage.setItem(STORAGE_KEYS.body, document.getElementById("bodyTemplate").value);
+      localStorage.setItem(STORAGE_KEYS.salesNavListUrl, document.getElementById("salesNavListUrl").value);
+      localStorage.setItem(STORAGE_KEYS.activityTemplate, document.getElementById("crmActivityTemplate").value);
+      localStorage.setItem(STORAGE_KEYS.liTemplate, document.getElementById("linkedinMessageTemplate").value);
+      localStorage.setItem(STORAGE_KEYS.emailTemplateId, document.getElementById("emailTemplateSelect").value);
+      localStorage.setItem(STORAGE_KEYS.linkedinTemplateId, document.getElementById("linkedinTemplateSelect").value);
+      if (document.getElementById("emailTemplateSelect").value === "custom") persistCustomEmailTemplate();
+      if (document.getElementById("linkedinTemplateSelect").value === "custom") persistCustomLinkedInTemplate();
+    }
+
+    function restoreSavedData() {
+      const savedCsv = localStorage.getItem(STORAGE_KEYS.contactsCsv);
+      const savedSubject = localStorage.getItem(STORAGE_KEYS.subject);
+      const savedBody = localStorage.getItem(STORAGE_KEYS.body);
+      const savedSalesNavListUrl = localStorage.getItem(STORAGE_KEYS.salesNavListUrl);
+      const savedActivityTemplate = localStorage.getItem(STORAGE_KEYS.activityTemplate);
+      const savedLiTemplate = localStorage.getItem(STORAGE_KEYS.liTemplate);
+      const savedEmailTemplateId = localStorage.getItem(STORAGE_KEYS.emailTemplateId) || "team_intro";
+      const savedLinkedInTemplateId = localStorage.getItem(STORAGE_KEYS.linkedinTemplateId) || "team_intro";
+
+      if (savedCsv) document.getElementById("contactsCsv").value = savedCsv;
+      if (savedSalesNavListUrl) document.getElementById("salesNavListUrl").value = savedSalesNavListUrl;
+      if (savedActivityTemplate) document.getElementById("crmActivityTemplate").value = savedActivityTemplate;
+
+      document.getElementById("emailTemplateSelect").value = savedEmailTemplateId;
+      document.getElementById("linkedinTemplateSelect").value = savedLinkedInTemplateId;
+
+      if (savedEmailTemplateId === "custom") {
+        if (savedSubject) document.getElementById("subjectTemplate").value = savedSubject;
+        if (savedBody) document.getElementById("bodyTemplate").value = savedBody;
+      } else {
+        applyEmailTemplateSelection();
+      }
+
+      if (savedLinkedInTemplateId === "custom") {
+        if (savedLiTemplate) document.getElementById("linkedinMessageTemplate").value = savedLiTemplate;
+      } else {
+        applyLinkedInTemplateSelection();
+      }
+    }
+
+    document.getElementById("contactsFile").addEventListener("change", async function(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      document.getElementById("contactsCsv").value = text;
+      loadContacts();
+    });
+
+    ["subjectTemplate", "bodyTemplate"].forEach(id => {
+      document.getElementById(id).addEventListener("input", () => {
+        markEmailTemplateCustom();
+        saveCurrentData();
+        previewContacts();
+      });
+    });
+
+    ["salesNavListUrl", "crmActivityTemplate"].forEach(id => {
+      document.getElementById(id).addEventListener("change", () => {
+        saveCurrentData();
+        previewContacts();
+      });
+    });
+
+    document.getElementById("linkedinMessageTemplate").addEventListener("input", () => {
+      markLinkedInTemplateCustom();
+      saveCurrentData();
+      previewContacts();
+    });
+
+    loadActionLog();
+    restoreSavedData();
+    loadContacts();
+  </script>
+</body>
+</html>
