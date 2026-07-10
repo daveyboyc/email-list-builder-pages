@@ -1136,10 +1136,18 @@ David`
       const rememberedId = localStorage.getItem(STORAGE_KEYS.lastContactId);
       const targetId = nextUnsent ? nextUnsent.id : rememberedId;
       if (!targetId) return;
-      setTimeout(() => {
+      const scrollToTarget = () => {
         const row = document.querySelector(`[data-contact-id="${targetId}"]`);
-        if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 0);
+        if (!row) return;
+        // Browser back/forward restoration can run after our first render. Use
+        // an explicit offset and retry after layout settles so the next
+        // unsent contact remains visible when returning from Outlook.
+        const top = Math.max(0, window.scrollY + row.getBoundingClientRect().top - 96);
+        window.scrollTo({ top, behavior: "auto" });
+      };
+      setTimeout(scrollToTarget, 0);
+      setTimeout(scrollToTarget, 250);
+      setTimeout(scrollToTarget, 750);
     }
 
     function findContact(id) {
@@ -1526,6 +1534,13 @@ David`
     loadActionLog();
     restoreSavedData();
     loadContacts();
+
+    // Re-apply the queue position when returning from a mail client or via
+    // browser back/forward navigation, which may restore scroll after load.
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    window.addEventListener("pageshow", () => {
+      if (contacts.length) restoreQueuePosition(getCurrentBatch().batch);
+    });
   </script>
 </body>
 </html>
