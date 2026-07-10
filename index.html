@@ -1158,6 +1158,7 @@ David`
       const opts = options || {};
       const contact = findContact(id);
       if (!contact || !contact.email) return;
+      const scrollY = window.scrollY;
       localStorage.setItem(STORAGE_KEYS.lastContactId, contact.id);
       openMailto(createMailtoLink(contact));
       recordAction(contact, "email_opened");
@@ -1167,6 +1168,9 @@ David`
         recordAction(contact, "email_sent");
       }
       previewContacts();
+      // Re-rendering the table replaces its rows and can otherwise jump the
+      // document to the top while Outlook opens.
+      window.scrollTo({ top: scrollY, behavior: "auto" });
     }
 
     function openLinkedInById(id) {
