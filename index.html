@@ -914,14 +914,14 @@ David`
     }
 
     function openMailto(mailtoLink) {
-      const a = document.createElement("a");
-      a.href = mailtoLink;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Use Outlook web directly so browser automation can retain control;
+      // native mailto handlers may hand the compose window to desktop Outlook.
+      const parsed = new URL(mailtoLink);
+      const compose = new URL("https://outlook.office.com/mail/deeplink/compose");
+      compose.searchParams.set("to", decodeURIComponent(parsed.pathname));
+      compose.searchParams.set("subject", parsed.searchParams.get("subject") || "");
+      compose.searchParams.set("body", parsed.searchParams.get("body") || "");
+      window.open(compose.toString(), "_blank", "noopener,noreferrer");
     }
 
     function escapeHtml(text) {
