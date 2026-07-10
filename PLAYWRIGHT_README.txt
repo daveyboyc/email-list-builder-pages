@@ -1,3 +1,6 @@
+Download the script from:
+https://github.com/daveyboyc/email-list-builder-pages/releases/latest/download/playwright_click_send_probe.py
+
 1. Put playwright_click_send_probe.py in Downloads.
 2. Open PowerShell and run:
 
